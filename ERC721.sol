@@ -237,24 +237,24 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**
-     作用: 更新指定 tokenId 的所有权，并处理相关事件和平衡变化。
-    参数:
-    to: 新拥有者的地址。
-    tokenId: NFT 的唯一标识符。
-    auth: 授权地址（可选）。
-    返回值: 上一个拥有者的地址。
-     * Emits a {Transfer} event.
-运行逻辑:
-获取当前持有者 from。
-如果提供了授权地址 auth，则调用 _checkAuthorized 函数检查该地址是否有权限操作 tokenId。
-如果当前持有者 from 不为空：
-清除对该 tokenId 的批准。
-减少当前持有者的余额。
-如果新持有者 to 不为空：
-增加新持有者的余额。
-更新 tokenId 的持有者为 to。
-触发 Transfer 事件。
-返回上一个持有者的地址 from
+    * 作用: 更新指定 tokenId 的所有权，并处理相关事件和平衡变化。
+    *参数:
+    *to: 新拥有者的地址。
+    *tokenId: NFT 的唯一标识符。
+    *auth: 授权地址（可选）。
+    *返回值: 上一个拥有者的地址。
+    * Emits a {Transfer} event.
+    * 运行逻辑:
+    *获取当前持有者 from。
+    *如果提供了授权地址 auth，则调用 _checkAuthorized 函数检查该地址是否有权限操作 tokenId。
+    *如果当前持有者 from 不为空：
+    *清除对该 tokenId 的批准。
+    *减少当前持有者的余额。
+    *如果新持有者 to 不为空：
+    *增加新持有者的余额。
+    *更新 tokenId 的持有者为 to。
+    *触发 Transfer 事件。
+    *返回上一个持有者的地址 from
      */
     function _mint(address to, uint256 tokenId) internal {
         if (to == address(0)) {
@@ -267,14 +267,14 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**作用: 铸造一个新的 NFT 并分配给指定地址。参数:  to: 新拥有者的地址。 tokenId: NFT 的唯一标识符
-    作用: 铸造一个新的 NFT 并分配给指定地址。
-    参数:
-    to: 新拥有者的地址。
-    tokenId: NFT 的唯一标识符。
-    运行逻辑:
-    检查接收地址 to 是否为零地址，如果是，则抛出异常 ERC721InvalidReceiver。
-    调用 _update 函数将 tokenId 分配给 to，并记录之前的持有者 previousOwner。
-    如果 previousOwner 不为空，则表示 tokenId 已经存在，抛出异常 ERC721InvalidSender
+    *作用: 铸造一个新的 NFT 并分配给指定地址。
+    *参数:
+    *to: 新拥有者的地址。
+    *tokenId: NFT 的唯一标识符。
+    **运行逻辑:
+    *检查接收地址 to 是否为零地址，如果是，则抛出异常 ERC721InvalidReceiver。
+    *调用 _update 函数将 tokenId 分配给 to，并记录之前的持有者 previousOwner。
+    *如果 previousOwner 不为空，则表示 tokenId 已经存在，抛出异常 ERC721InvalidSender
      * @dev Mints `tokenId`, transfers it to `to` and checks for `to` acceptance.
      *
      * Requirements:
@@ -299,14 +299,14 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
     
     /**
-作用: 安全地铸造一个新的 NFT 并分配给指定地址，确保接收方知道如何处理 ERC-721 标准。
-参数:
-to: 新拥有者的地址。
-tokenId: NFT 的唯一标识符。
-data: 附加数据，用于传递给接收方。
-运行逻辑:
-调用 _mint 函数铸造并分配 tokenId 给 to。
-调用 ERC721Utils.checkOnERC721Received 函数，确保如果 to 是智能合约，则其实现了 onERC721Received 方法，以防止代币被永久锁定
+    *作用: 安全地铸造一个新的 NFT 并分配给指定地址，确保接收方知道如何处理 ERC-721 标准。
+    *参数:
+    *to: 新拥有者的地址。
+    *tokenId: NFT 的唯一标识符。
+    *data: 附加数据，用于传递给接收方。
+    *运行逻辑:
+    *调用 _mint 函数铸造并分配 tokenId 给 to。
+    *调用 ERC721Utils.checkOnERC721Received 函数，确保如果 to 是智能合约，则其实现了 onERC721Received 方法，以防止代币被永久锁定
      * @dev Destroys `tokenId`.
      * The approval is cleared when the token is burned.
      * This is an internal function that does not check if the sender is authorized to operate on the token.
