@@ -244,6 +244,17 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     auth: 授权地址（可选）。
     返回值: 上一个拥有者的地址。
      * Emits a {Transfer} event.
+运行逻辑:
+获取当前持有者 from。
+如果提供了授权地址 auth，则调用 _checkAuthorized 函数检查该地址是否有权限操作 tokenId。
+如果当前持有者 from 不为空：
+清除对该 tokenId 的批准。
+减少当前持有者的余额。
+如果新持有者 to 不为空：
+增加新持有者的余额。
+更新 tokenId 的持有者为 to。
+触发 Transfer 事件。
+返回上一个持有者的地址 from
      */
     function _mint(address to, uint256 tokenId) internal {
         if (to == address(0)) {
@@ -256,6 +267,14 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**作用: 铸造一个新的 NFT 并分配给指定地址。参数:  to: 新拥有者的地址。 tokenId: NFT 的唯一标识符
+    作用: 铸造一个新的 NFT 并分配给指定地址。
+    参数:
+    to: 新拥有者的地址。
+    tokenId: NFT 的唯一标识符。
+    运行逻辑:
+    检查接收地址 to 是否为零地址，如果是，则抛出异常 ERC721InvalidReceiver。
+    调用 _update 函数将 tokenId 分配给 to，并记录之前的持有者 previousOwner。
+    如果 previousOwner 不为空，则表示 tokenId 已经存在，抛出异常 ERC721InvalidSender
      * @dev Mints `tokenId`, transfers it to `to` and checks for `to` acceptance.
      *
      * Requirements:
@@ -264,10 +283,11 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
      * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
      *
      * Emits a {Transfer} event.
+
      */
     function _safeMint(address to, uint256 tokenId) internal {
         _safeMint(to, tokenId, "");
-    }
+    } 
 
     /**
      * @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
@@ -277,8 +297,16 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         _mint(to, tokenId);
         ERC721Utils.checkOnERC721Received(_msgSender(), address(0), to, tokenId, data);
     }
-
+    
     /**
+作用: 安全地铸造一个新的 NFT 并分配给指定地址，确保接收方知道如何处理 ERC-721 标准。
+参数:
+to: 新拥有者的地址。
+tokenId: NFT 的唯一标识符。
+data: 附加数据，用于传递给接收方。
+运行逻辑:
+调用 _mint 函数铸造并分配 tokenId 给 to。
+调用 ERC721Utils.checkOnERC721Received 函数，确保如果 to 是智能合约，则其实现了 onERC721Received 方法，以防止代币被永久锁定
      * @dev Destroys `tokenId`.
      * The approval is cleared when the token is burned.
      * This is an internal function that does not check if the sender is authorized to operate on the token.
@@ -296,7 +324,12 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         }
     }
 
-    /**
+    /**作用: 销毁指定的 tokenId。
+     *    参数:
+     *    tokenId: NFT 的唯一标识符。
+     *    运行逻辑:
+     *    调用 _update 函数将 tokenId 的持有者设置为零地址。
+     *    如果 previousOwner 为空，则表示 tokenId 不存在，抛出异常 ERC721NonexistentToken
      * @dev Transfers `tokenId` from `from` to `to`.
      *  As opposed to {transferFrom}, this imposes no restrictions on msg.sender.
      *
@@ -320,6 +353,16 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**
+    * 作用: 将 tokenId 从 from 转移到 to。
+    * 参数:
+    * from: 当前持有者的地址。
+    * to: 新持有者的地址。
+    * tokenId: NFT 的唯一标识符。
+    * 运行逻辑:
+    * 检查接收地址 to 是否为零地址，如果是，则抛出异常 ERC721InvalidReceiver。
+    * 调用 _update 函数将 tokenId 的持有者从 from 转移到 to，并记录之前的持有者 previousOwner。
+    * 如果 previousOwner 为空，则表示 tokenId 不存在，抛出异常 ERC721NonexistentToken。
+    * 如果 previousOwner 不等于 from，则表示 from 不是真正的持有者，抛出异常 ERC721IncorrectOwner。
      * @dev Safely transfers `tokenId` token from `from` to `to`, checking that contract recipients
      * are aware of the ERC-721 standard to prevent tokens from being forever locked.
      *
@@ -342,7 +385,15 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         _safeTransfer(from, to, tokenId, "");
     }
 
-    /**
+    /** 安全地将 tokenId 从 from 转移到 to，确保接收方知道如何处理 ERC-721 标准。
+    *参数:
+    *from: 当前持有者的地址。
+    *to: 新持有者的地址。
+    *tokenId: NFT 的唯一标识符。
+    *data: 附加数据，用于传递给接收方。
+    *运行逻辑:
+    *调用 _transfer 函数将 tokenId 从 from 转移到 to。
+    *调用 ERC721Utils.checkOnERC721Received 函数，确保如果 to 是智能合约，则其实现了 onERC721Received 方法，以防止代币被永久锁定。
      * @dev Same as {xref-ERC721-_safeTransfer-address-address-uint256-}[`_safeTransfer`], with an additional `data` parameter which is
      * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
      */
@@ -388,6 +439,17 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**
+     *   作用: 授权 to 操作 tokenId。
+     *   参数:
+     *   to: 被授权的地址。
+     *    tokenId: NFT 的唯一标识符。
+     *   auth: 授权地址（可选）。
+     *   emitEvent: 是否触发 Approval 事件。
+     *   运行逻辑:
+     *   如果需要触发事件或提供了授权地址 auth，则获取 tokenId 的持有者 owner。
+     *   检查 auth 是否有权限授权 to 操作 tokenId。如果没有权限，则抛出异常 ERC721InvalidApprover。
+     *   如果需要触发事件，则触发 Approval 事件。
+     *   更新 tokenId 的批准地址为 to
      * @dev Approve `operator` to operate on all of `owner` tokens
      *
      * Requirements:
@@ -403,7 +465,15 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         emit ApprovalForAll(owner, operator, approved);
     }
 
-    /**
+    /**作用: 授权或取消对某个操作员的全局批准权限。
+     * 参数:
+     *  owner: 拥有者的地址。
+     *   operator: 操作员地址。
+     *  approved: 是否批准。
+     *    运行逻辑:
+     *    检查操作员地址 operator 是否为零地址，如果是，则抛出异常 ERC721InvalidOperator。
+     *   更新 owner 对 operator 的全局批准状态为 approved。
+     *  触发 ApprovalForAll 事件。
      * @dev Reverts if the `tokenId` doesn't have a current owner (it hasn't been minted, or it has been burned).
      * Returns the owner.
      *
@@ -416,4 +486,8 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         }
         return owner;
     }
+//作用: 查询并验证 tokenId 是否有持有者。参数:tokenId: NFT 的唯一标识符。 返回值: 持有者的地址。
+//运行逻辑: 获取 tokenId 的持有者 owner。
+//如果持有者为空，则表示 tokenId 不存在，抛出异常 ERC721NonexistentToken。
+//返回持有者的地址 owner。
 }
