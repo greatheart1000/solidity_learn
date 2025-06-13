@@ -100,17 +100,17 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         _requireOwned(tokenId);
 
         return _getApproved(tokenId);
-    }
+    }  //查询批准状态  作用: 返回指定 tokenId 的被授权地址。参数:tokenId: NFT 的唯一标识符。  返回值: 被授权的地址
 
     /// @inheritdoc IERC721
     function setApprovalForAll(address operator, bool approved) public virtual {
         _setApprovalForAll(_msgSender(), operator, approved);
-    }
+    } //设置全局批准 设置或取消对某个操作员的全局批准权限 参数 : operator: 操作员地址。 approved: 是否批准。
 
     /// @inheritdoc IERC721
     function isApprovedForAll(address owner, address operator) public view virtual returns (bool) {
         return _operatorApprovals[owner][operator];
-    }
+    } //作用: 查询某地址是否对另一地址具有全局批准权限。参数:owner: 拥有者的地址。 operator: 操作员地址。 返回值: 是否批准
 
     /// @inheritdoc IERC721
     function transferFrom(address from, address to, uint256 tokenId) public virtual {
@@ -123,18 +123,18 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         if (previousOwner != from) {
             revert ERC721IncorrectOwner(from, tokenId, previousOwner);
         }
-    }
+    } //作用: 将指定 tokenId 的 NFT 从一个地址转移到另一个地址。参数: from: 当前拥有者的地址。 to: 新拥有者的地址。 tokenId: NFT 的唯一标识符。
 
     /// @inheritdoc IERC721
     function safeTransferFrom(address from, address to, uint256 tokenId) public {
         safeTransferFrom(from, to, tokenId, "");
-    }
+    } //作用: 安全地将指定 tokenId 的 NFT 从一个地址转移到另一个地址，不带附加数据
 
     /// @inheritdoc IERC721
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual {
         transferFrom(from, to, tokenId);
         ERC721Utils.checkOnERC721Received(_msgSender(), from, to, tokenId, data);
-    }
+    } //作用: 安全地将指定 tokenId 的 NFT 从一个地址转移到另一个地址，并附带额外的数据 
 
     /**
      * @dev Returns the owner of the `tokenId`. Does NOT revert if token doesn't exist
@@ -146,14 +146,14 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
      */
     function _ownerOf(uint256 tokenId) internal view virtual returns (address) {
         return _owners[tokenId];
-    }
+    } // 作用: 返回指定 tokenId 的拥有者地址
 
     /**
      * @dev Returns the approved address for `tokenId`. Returns 0 if `tokenId` is not minted.
      */
     function _getApproved(uint256 tokenId) internal view virtual returns (address) {
         return _tokenApprovals[tokenId];
-    }
+    } //查询批准状态（内部） 作用: 返回指定 tokenId 的被授权地址。参数:tokenId: NFT 的唯一标识符。 返回值: 被授权的地址
 
     /**
      * @dev Returns whether `spender` is allowed to manage `owner`'s tokens, or `tokenId` in
@@ -166,17 +166,8 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         return
             spender != address(0) &&
             (owner == spender || isApprovedForAll(owner, spender) || _getApproved(tokenId) == spender);
-    }
+    } //检查授权状态（内部） 参数:owner: 拥有者的地址。 spender: 被授权的地址。 tokenId: NFT 的唯一标识符。 返回值: 是否授权。
 
-    /**
-     * @dev Checks if `spender` can operate on `tokenId`, assuming the provided `owner` is the actual owner.
-     * Reverts if:
-     * - `spender` does not have approval from `owner` for `tokenId`.
-     * - `spender` does not have approval to manage all of `owner`'s assets.
-     *
-     * WARNING: This function assumes that `owner` is the actual owner of `tokenId` and does not verify this
-     * assumption.
-     */
     function _checkAuthorized(address owner, address spender, uint256 tokenId) internal view virtual {
         if (!_isAuthorized(owner, spender, tokenId)) {
             if (owner == address(0)) {
@@ -185,7 +176,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
                 revert ERC721InsufficientApproval(spender, tokenId);
             }
         }
-    }
+    } //作用: 检查某个地址是否被授权管理指定 tokenId，如果没有授权则抛出异常
 
     /**
      * @dev Unsafe write access to the balances, used by extensions that "mint" tokens using an {ownerOf} override.
@@ -201,7 +192,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         unchecked {
             _balances[account] += value;
         }
-    }
+    } //作用: 增加指定账户的 NFT 平衡。参数:account: 账户地址。 value: 增加的数量。
 
     /**
      * @dev Transfers `tokenId` from its current owner to `to`, or alternatively mints (or burns) if the current owner
@@ -246,15 +237,12 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     }
 
     /**
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     * WARNING: Usage of this method is discouraged, use {_safeMint} whenever possible
-     *
-     * Requirements:
-     *
-     * - `tokenId` must not exist.
-     * - `to` cannot be the zero address.
-     *
+     作用: 更新指定 tokenId 的所有权，并处理相关事件和平衡变化。
+    参数:
+    to: 新拥有者的地址。
+    tokenId: NFT 的唯一标识符。
+    auth: 授权地址（可选）。
+    返回值: 上一个拥有者的地址。
      * Emits a {Transfer} event.
      */
     function _mint(address to, uint256 tokenId) internal {
@@ -267,7 +255,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         }
     }
 
-    /**
+    /**作用: 铸造一个新的 NFT 并分配给指定地址。参数:  to: 新拥有者的地址。 tokenId: NFT 的唯一标识符
      * @dev Mints `tokenId`, transfers it to `to` and checks for `to` acceptance.
      *
      * Requirements:
