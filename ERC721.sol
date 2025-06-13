@@ -22,7 +22,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     // Token name
     string private _name;
 
-    // Token symbol
+    // Token symbol 
     string private _symbol;
 
     mapping(uint256 tokenId => address) private _owners;
@@ -39,7 +39,8 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-    }
+    } 
+    //初始化合约时设置代币集合的名称 (name_) 和符号 (symbol_)
 
     /// @inheritdoc IERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
@@ -48,7 +49,7 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
             interfaceId == type(IERC721Metadata).interfaceId ||
             super.supportsInterface(interfaceId);
     }
-
+//supportsInterface 作用: 检查合约是否支持特定的接口（如 IERC721 和 IERC721Metadata）。
     /// @inheritdoc IERC721
     function balanceOf(address owner) public view virtual returns (uint256) {
         if (owner == address(0)) {
@@ -56,21 +57,21 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
         }
         return _balances[owner];
     }
-
+    //查询余额 作用: 返回指定地址拥有的 NFT 数量 owner: 拥有者的地址。返回值: 拥有者的 NFT 数量
     /// @inheritdoc IERC721
     function ownerOf(uint256 tokenId) public view virtual returns (address) {
         return _requireOwned(tokenId);
-    }
+    }  //返回指定 tokenId 的拥有者地址。 tokenId: NFT 的唯一标识符
 
     /// @inheritdoc IERC721Metadata
     function name() public view virtual returns (string memory) {
         return _name;
-    }
+    } //获取代币名称
 
     /// @inheritdoc IERC721Metadata
     function symbol() public view virtual returns (string memory) {
         return _symbol;
-    }
+    } //获取代币符号
 
     /// @inheritdoc IERC721Metadata
     function tokenURI(uint256 tokenId) public view virtual returns (string memory) {
@@ -78,21 +79,21 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
 
         string memory baseURI = _baseURI();
         return bytes(baseURI).length > 0 ? string.concat(baseURI, tokenId.toString()) : "";
-    }
+    } 
 
-    /**
+    /** 参数 tokenId: NFT 的唯一标识符   作用: 返回指定 tokenId 的元数据 URI
      * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
      * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
      * by default, can be overridden in child contracts.
      */
     function _baseURI() internal view virtual returns (string memory) {
         return "";
-    }
+    } // 作用: 返回基础 URI，用于构建完整的 tokenURI
 
     /// @inheritdoc IERC721
     function approve(address to, uint256 tokenId) public virtual {
         _approve(to, tokenId, _msgSender());
-    }
+    }  //作用: 将指定 tokenId 的批准权授予另一个地址。 参数: to: 被授权的地址。  tokenId: NFT 的唯一标识符
 
     /// @inheritdoc IERC721
     function getApproved(uint256 tokenId) public view virtual returns (address) {
