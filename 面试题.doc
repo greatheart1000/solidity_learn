@@ -67,3 +67,45 @@
 
 20. 什么是重入（Reentrancy）？  
     合约在修改自身状态前向外部（可攻击合约）发起调用，对方再回调本合约并利用未更新的状态反复执行，导致资金损失。
+
+以下是针对这 11 道 Solidity/Ethereum 面试题的简明答案：
+
+21. 上海升级后，每个区块的 gas 限制是多少？  
+   - 上海（Shanghai）升级并未改动区块 Gas 限制，它依然由共识动态决定，目前主网约为 30 000 000 gas 左右。
+
+22. 什么阻止无限循环永远运行？  
+   - 每个操作都会消耗 Gas，事务有 Gas Limit，Gas 用完后 EVM 会 revert，因此不可能无限循环。
+
+23. tx.origin 和 msg.sender 之间有什么区别？  
+   - tx.origin：始发交易的外部账户（EOA）。  
+   - msg.sender：当前调用的直接发送者（可能是合约，也可能是 EOA）。  
+   - 安全认证应用 msg.sender，避免中间合约钓鱼攻击。
+
+24. 如何向没有 payable 函数、receive 或 fallback 的合约发送以太？  
+   - 直接调用 transfer/call 会 revert，唯一途径是由另一个合约执行 selfdestruct(target)，销毁自身并强制把余额寄给目标合约。
+
+25. view 和 pure 之间有什么区别？  
+   - view：可以读取链上状态，但不得修改。  
+   - pure：既不能读取，也不能修改链上状态，只能做纯计算。
+
+26. ERC-721 中的 transferFrom 和 safeTransferFrom 之间有什么区别？  
+   - transferFrom：直接转账，不检查接收方是否能处理 ERC-721。  
+   - safeTransferFrom：如果接收方是合约，会调用其 onERC721Received，未实现则 revert，防止 NFT 被锁死。
+
+27. 如何将 ERC-1155 代币转换为非同质化代币（NFT）？  
+   - 最简单的做法是：为每个唯一资产使用不同的 tokenId，且 mint 时指定 supply=1；  
+   - 或者写一个 ERC-1155→ERC-721 的包装器合约，内部映射 1155 id→721 id。
+
+28. 访问控制是什么，为什么重要？  
+   - 访问控制（Access Control）指合约中限制哪类账号能调用哪些函数（如 Ownable、RBAC）。  
+   - 它是安全的基石，防止未授权操作导致资产被盗或逻辑被破坏。
+
+29. 修饰符（modifier）的作用是什么？  
+   - 在函数执行前后注入可重用的“前置/后置逻辑”（如检查权限、修改状态），减少重复代码。
+
+30. uint256 可以存储的最大值是多少？  
+    - 2^256 − 1，约等于 1.1579×10^77。
+
+31. 什么是浮动利率和固定利率？  
+    - 固定利率（Fixed Rate）：在整个借贷期内利率不变。  
+    - 浮动利率（Variable/Floating Rate）：利率随市场指数（如借贷池利用率、基准利率）动态波动。
