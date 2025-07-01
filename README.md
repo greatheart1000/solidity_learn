@@ -1,6 +1,6 @@
 https://github.com/jimlon-xyz/solidity-lesson/tree/master <br>
-https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol  ERC721标准合约
-
+https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol  ERC721标准合约 <br>
+web3js.cn 学习 <br>
 下面给出基于你岗位要求，拆分出的30 条具体技术点，你可以逐一对照和自学／实践：
 
 1. 扎实的计算机科学基础：数据结构与算法  
