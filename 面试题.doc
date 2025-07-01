@@ -1,0 +1,69 @@
+以下是针对这 20 道以太坊/Solidity 常见面试题的简明答案：
+
+1. 可见性（visibility）  
+   - `private`：仅当前合约内可调用；  
+   - `internal`：当前合约及其子合约可调用；  
+   - `public`：内部／外部都可调用，编译器为外部调用生成自动 getter；  
+   - `external`：仅外部调用（txn／其他合约），内部调用需 `this.fn()`，略贵。
+
+2. 合约大小  
+   EVM 对合约字节码大小有限制：最大 24 576 字节（24 KB）。
+
+3. `create` vs. `create2`  
+   - `create`：部署地址由部署者地址＋nonce 决定，不可预测；  
+   - `create2`：由部署者地址、salt、合约 init-code 的 keccak256 决定，部署前可算出地址。
+
+4. Solidity 0.8.0 算术变化  
+   内置溢出/下溢检查，发生溢出时自动 `revert`，不再需要手动引入 SafeMath（可用 unchecked 关闭检查）。
+
+5. 代理合约需用哪种 CALL？  
+   用`delegatecall`，才能在代理的存储上下文里执行逻辑合约代码。
+
+6. EIP-1559 前计算交易美元成本  
+   `gasUsed * gasPrice(wei) = 花费的 wei`，再乘以当时 ETH/USD 汇率。
+
+7. 链上随机数的挑战  
+   EVM 环境决定性强，`blockhash`、`timestamp` 可被矿工或验证者操控，需借助链外预言机或 commit-reveal。
+
+8. 荷兰式拍卖 vs. 英式拍卖  
+   - 荷兰式：价格从高到低递减，第一个接受当前价即成交；  
+   - 英式：价格从低到高递增，直到无人出更高价时最高出价者得标。
+
+9. ERC-20 的 `transfer` vs. `transferFrom`  
+   - `transfer(to, val)`：msg.sender 自己转给 `to`；  
+   - `transferFrom(from, to, val)`：花 `from` 的授权额度（allowance）把代币转给 `to`。
+
+10. allowlist 用映射还是数组？  
+    映射（`mapping(address=>bool)`）可 O(1) 查验、无需遍历，节省 gas；数组需遍历判断，gas 随长度线性增长。
+
+11. 为什么不用 `tx.origin` 认证？  
+    `tx.origin` 是发起交易的最初外部账户，可被中间合约“钓鱼”利用，推荐用 `msg.sender`。
+
+12. Ethereum 用的哈希函数  
+    EVM 内部用的是 `keccak256`（与 SHA-3 标准略有差异）。
+
+13. 1 ETH 等于多少 gwei？  
+    1 ETH = 10⁹ gwei。
+
+14. 1 ETH 等于多少 wei？  
+    1 ETH = 10¹⁸ wei。
+
+15. `assert` vs. `require`  
+    - `require`：用于输入/外部条件验证，失败会退回剩余 gas 并 revert；  
+    - `assert`：用于内部不变式检查，失败会消耗所有 gas 并触发 Panic（应“绝不”触发）。
+
+16. 闪电贷（Flash Loan）  
+    无需抵押、在同一笔交易内借贷并还款，否则交易回滚，可在 DeFi 中做套利、清算等。
+
+17. 检查-状态-交互（check-effects-interactions）模式  
+    先 `require` 检查，后修改合约状态，最后再做外部调用，防止重入攻击。
+
+18. 独立验证节点最小抵押量  
+    成为 Eth2 验证者需要 32 ETH；如果只是运行全节点，不需要任何抵押。
+
+19. `fallback` vs. `receive`  
+    - `receive()`：只能接收空 `msg.data` 的 ETH；  
+    - `fallback()`：数据不匹配或 `receive` 不存在时调用，可有或无 `payable`，处理其它调用。
+
+20. 什么是重入（Reentrancy）？  
+    合约在修改自身状态前向外部（可攻击合约）发起调用，对方再回调本合约并利用未更新的状态反复执行，导致资金损失。
