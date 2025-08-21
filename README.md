@@ -34,5 +34,34 @@ web3js.cn 学习 <br>
 29. Layer2 和跨链技术：Optimism、Arbitrum、Polygon、跨链桥原理  
 30. 形式化验证与模型检测：Certora、KEVM、Solidity SMTChecker  
 
-
 每条都可进一步拆解成子专题，建议结合官方文档、开源项目和安全审计报告，边读边实践、边写边测试。祝顺利入门并不断进阶！
+该岗位将重点负责 BSC（BNB Chain）生态内的合约系统开发，尤其是在 Launchpad（如 four.meme 等）机制、Swap机制、项目筛选机制方面，构建高安全性、高性能的智能合约体系。
+你将与产品、前端、推荐系统、数据团队紧密合作，共同推动 Coinroll 自动化发射系统的上线与迭代。
+```Job Requirements:
+1.熟练使用 Solidity 进行智能合约开发，拥有 2 年以上相关经验
+2.熟悉主流 AMM 协议，如 Uniswap、PancakeSwap，具备 Swap 类型合约的开发经验
+3.熟悉 BSC（BNB Chain）生态，了解其运行机制、Gas优化、安全规范
+4.有 Launchpad / 发射台项目经验（如 four.meme、Pump.fun等）的合约分析或开发经历优先
+5.熟悉合约安全（重入、授权、Flashloan 等）及防御手段
+6.熟练使用 Hardhat / Foundry / Remix 进行合约测试与部署
+7.能独立完成合约的设计、部署、验证与升级管理
+加分项：了解链上预言机、dex交易生态、链上用户行为分析等系统
+加分项：具备链上数据索引 / subgraph 构建经验
+有链上项目上线经验者优先（请附 GitHub / 项目地址）
+
+```
+该岗位将重点负责 BSC（BNB Chain）生态内的合约系统开发，尤其是在 Launchpad（如 four.meme 等）机制、Swap机制、项目筛选机制方面，构建高安全性、高性能的智能合约体系。
+你将与产品、前端、推荐系统、数据团队紧密合作，共同推动 Coinroll 自动化发射系统的上线与迭代。
+Job Requirements:
+1.熟练使用 Solidity 进行智能合约开发，拥有 2 年以上相关经验
+2.熟悉主流 AMM 协议，如 Uniswap、PancakeSwap，具备 Swap 类型合约的开发经验
+3.熟悉 BSC（BNB Chain）生态，了解其运行机制、Gas优化、安全规范
+4.有 Launchpad / 发射台项目经验（如 four.meme、Pump.fun等）的合约分析或开发经历优先
+5.熟悉合约安全（重入、授权、Flashloan 等）及防御手段
+6.熟练使用 Hardhat / Foundry / Remix 进行合约测试与部署
+7.能独立完成合约的设计、部署、验证与升级管理
+加分项：了解链上预言机、dex交易生态、链上用户行为分析等系统
+加分项：具备链上数据索引 / subgraph 构建经验
+有链上项目上线经验者优先（请附 GitHub / 项目地址）
+```
+
